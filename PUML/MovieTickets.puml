@@ -1,0 +1,55 @@
+@startuml
+
+    actor User
+    actor Administrator
+    participant "Online Movie Ticket Booking System"
+    participant Movies
+    participant Payments
+
+    ==search==
+    User -> System : GET/movie/:id
+    System -> User : 200
+    System -> Movies : Retrieve list of matching movies
+    Movies -> System: List of matching movies
+    System -> User: Display list of matching movies
+    User -> System: Select a movie
+
+    ==available showtimes==
+    System -> Movies : POST/ movies
+    Movies -> System : 200
+    Movies -> System : Movie details and showtimes
+    System -> User : Display movie details and available showtimes
+    User -> System : Select a showtime
+    System -> Movies : Check seat availability
+    Movies -> System : Seat availability
+    System -> User : Choose seats
+    User -> System : Confirm seat selection
+
+    ==confirm the seats and reservation.==
+    System -> Movies : POST/movie:id
+    System -> Movies: Confirm seat availability and create reservation
+    Movies -> System: Reservation created
+    System -> User: Display reservation confirmation
+
+    ==proceed to checkout==
+    User -> System: Proceed to checkout
+    System -> System: Process payment
+    System -> Movies: Update movie seat availability
+    Movies -> System: Seat availability updated
+    System -> User: Display payment confirmation
+    Payments -> Gateway : PUT /payment:id
+    Gateway -> Payments : 204 no content
+
+    ==Administrator==
+    Administrator -> System: Login as admin
+    Administrator -> System: Add movie to database
+    System -> Movies: Save movie information
+    Administrator -> System: Remove movie from database
+    System -> Movies: Delete movie information
+    Administrator -> System: Manage movie showtimes
+    System -> Movies: Update movie showtimes
+    System -> Movies: PUT/movie:id
+    MovieDB -> System : 200
+    System -> Admin : Update movie showtimes
+
+@enduml

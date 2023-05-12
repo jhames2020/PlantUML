@@ -1,0 +1,40 @@
+@startuml
+
+    actor User
+    actor Administrator
+    participant System
+    participant Cart
+    participant Orders
+    participant Store
+
+    User -> System: Login
+    User -> System: Browse store
+    System -> Store: Display book list
+
+    === add book to cart ==
+    Store -> Cart : POST/ products
+    Cart -> Store : 200
+    System -> Cart: GET/product:id/item:id
+    Cart -> System : 200
+    System -> User: Confirm Book added to Cart 
+    System -> Cart: Clear cart
+    System -> Orders : POST /order
+    Orders -> Store : GET /product:id
+    Store -> Orders : 200
+    Orders -> System : 201
+    User -> System: Proceed to checkout
+    System -> Store: Calculate total cost
+    System -> User: Display checkout page
+    User -> System: Submit payment
+    System -> Store: Process payment
+    System -> User: Display confirmation page
+
+
+    === administrator ==
+    Administrator -> System: Login as admin
+    Administrator -> System: Add book to store
+    System -> Store: Save book information
+    Administrator -> System: Remove book from store
+    System -> Store: Delete book information
+
+@enduml
